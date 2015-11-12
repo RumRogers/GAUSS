@@ -24,6 +24,11 @@ var exportGame = function()
     for(var i = 0; i < backupAnims.length; i++)
         eliminateCycles(backupAnims[i], 'anim');
     var globalVars = '\n\
+        var WALK_TO_ID = \'Walk_to\';\n\
+        var EYES_ID = \'Eyes\';\n\
+        var HAND_ID = \'Hand\';\n\
+        var MOUTH_ID = \'Mouth\';\n\
+        var COMBINE_ID = \'Combine\';\n\
         var roomsList = ' + JSON.stringify(backupRooms) + '; \n\
         var charactersList =' + JSON.stringify(backupCharacters) + '; \n\
         var animsList = ' + JSON.stringify(backupAnims) + '; \n\
@@ -113,7 +118,7 @@ var exportGame = function()
         clearInterval(scrollIntUD);\n\
         scrollIntLR = null;\n\
         scrollIntUD = null;\n\
-        actionSelected = \'Walk_to\';\n\
+        actionSelected = WALK_TO_ID;\n\
         targetObj1 = null;\n\
         targetObj2 = null;\n\
         mouseDown = false;\n\
@@ -283,7 +288,7 @@ var exportGame = function()
     \n\
             if(guiObj.actionSelected)\n\
             {\n\
-                if(guiObj.actionSelected !== \'Combine\')\n\
+                if(guiObj.actionSelected !== COMBINE_ID)\n\
                 {\n\
                     var action = guiObj.actionSelected;\n\
                     var obj = guiObj.hovering;\n\
@@ -386,7 +391,7 @@ var exportGame = function()
        \n\
             relX += viewport.left;\n\
             relY += viewport.top;\n\
-            if (actionSelected == \'Walk_to\' && guiObj.listening)\n\
+            if (actionSelected ==  WALK_TO_ID  && guiObj.listening)\n\
             {\n\
                 walkToPos(currentCharacter.id, relX, relY, [], null);\n\
             }\n\
@@ -404,7 +409,7 @@ var exportGame = function()
                 ev.pageY = e.pageY;\n\
                 $(gameCanvas).trigger(ev);\n\
             }\n\
-            guiObj.onScreen = \"almost\";\n\
+            guiObj.onScreen = true;\n\
             guiObj.item = null;\n\
             guiObj.hovering = hovering;\n\
         }\n\
@@ -438,7 +443,7 @@ var exportGame = function()
                 walkToObj(currentCharacter.id, obj2, null, function ()\n\
                 {\n\
                     setDirection(currentCharacter.id, testMapIdItem[obj2].faceDir);\n\
-                    eval(gameScripts[\'Combine\'][obj1][obj2].code);\n\
+                    eval(gameScripts[COMBINE_ID][obj1][obj2].code);\n\
                 });\n\
     \n\
             }\n\
@@ -470,7 +475,7 @@ var exportGame = function()
         {\n\
             if(guiObj.cursor.state !== hoveredInvItem.id)\n\
             {\n\
-                eval(gameScripts[\'Combine\'][guiObj.cursor.state][hoveredInvItem.id].code);\n\
+                eval(gameScripts[COMBINE_ID][guiObj.cursor.state][hoveredInvItem.id].code);\n\
                 guiObj.setCursor(\'default\');\n\
             }\n\
             return;\n\
@@ -501,23 +506,23 @@ var exportGame = function()
             hovering = null;\n\
             if(getDistanceBetweenPoints(mousePos, guiObj.magnifierButtonCenter) < guiObj.getButtonRadius())\n\
             {\n\
-                guiObj.setActionSelected(\'look\');\n\
+                guiObj.setActionSelected(EYES_ID);\n\
                 btnHovering = true;\n\
             }\n\
             else if(getDistanceBetweenPoints(mousePos, guiObj.handButtonCenter) < guiObj.getButtonRadius())\n\
             {\n\
-                guiObj.setActionSelected(\'use\');\n\
+                guiObj.setActionSelected(HAND_ID);\n\
                 btnHovering = true;\n\
     \n\
             }\n\
             else if(getDistanceBetweenPoints(mousePos, guiObj.mouthButtonCenter) < guiObj.getButtonRadius())\n\
             {\n\
-                guiObj.setActionSelected(\'talk\');\n\
+                guiObj.setActionSelected(MOUTH_ID);\n\
                 btnHovering = true;\n\
             }\n\
             else if(getDistanceBetweenPoints(mousePos, guiObj.cogwheelButtonCenter) < guiObj.getButtonRadius())\n\
             {\n\
-                guiObj.setActionSelected(\'combine\');\n\
+                guiObj.setActionSelected(COMBINE_ID);\n\
                 btnHovering = true;\n\
             }\n\
     \n\
@@ -592,7 +597,7 @@ var exportGame = function()
                             var sentence = \'Combine \' + testMapIdInvItem[guiObj.cursor.state].description + \' with \' + testMapIdItem[hovering].description;\n\
                             try\n\
                             {\n\
-                                sentence = (gameScripts[\'Combine\'][guiObj.cursor.state][hovering].sentence) ? gameScripts[\'Combine\'][guiObj.cursor.state][hovering].sentence : sentence;\n\
+                                sentence = (gameScripts[COMBINE_ID][guiObj.cursor.state][hovering].sentence) ? gameScripts[COMBINE_ID][guiObj.cursor.state][hovering].sentence : sentence;\n\
                             }\n\
                             catch(err) {}\n\
                             guiObj.sentence = sentence;\n\
@@ -630,7 +635,7 @@ var exportGame = function()
                                 var sentence = \'Combine \' + testMapIdInvItem[guiObj.cursor.state].description + \' with \' + testMapIdItem[hovering].description;\n\
                                 try\n\
                                 {\n\
-                                    sentence = (gameScripts[\'Combine\'][guiObj.cursor.state][hovering].sentence) ? gameScripts[\'Combine\'][guiObj.cursor.state][hovering].sentence : sentence;\n\
+                                    sentence = (gameScripts[COMBINE_ID][guiObj.cursor.state][hovering].sentence) ? gameScripts[COMBINE_ID][guiObj.cursor.state][hovering].sentence : sentence;\n\
                                 }\n\
                                 catch(err) {}\n\
                                 guiObj.sentence = sentence;\n\
@@ -673,7 +678,7 @@ var exportGame = function()
                     var sentence = \'Combine \' + testMapIdInvItem[guiObj.cursor.state].description + \' with \' + testMapIdInvItem[hoveredItem.id].description;\n\
                     try\n\
                     {\n\
-                        sentence = (gameScripts[\'Combine\'][guiObj.cursor.state][hoveredItem.id].sentence) ? gameScripts[\'Combine\'][guiObj.cursor.state][hoveredItem.id].sentence : sentence;\n\
+                        sentence = (gameScripts[COMBINE_ID][guiObj.cursor.state][hoveredItem.id].sentence) ? gameScripts[COMBINE_ID][guiObj.cursor.state][hoveredItem.id].sentence : sentence;\n\
                     }\n\
                     catch (err) {}\n\
                     guiObj.sentence = sentence;\n\
@@ -833,7 +838,7 @@ var compileScripts = function()
         if(key === 'Events')
             continue;
         for (var item in editorMapIdItem)
-            if(key !== 'Combine')
+            if(key !== COMBINE_ID)
             {
                 if (gameScripts[key][item] === undefined)
                     gameScripts[key][item] = { 'code': defaultReactions[key] };
@@ -843,7 +848,7 @@ var compileScripts = function()
         //gameScripts[key][item] = { 'code' : getDefaultReaction(key, item) };
         //createDefaultScript('item', [key, item]);
         for (var item in editorMapIdInvItem)
-            if(key !== 'Combine')
+            if(key !== COMBINE_ID)
             {
                 if (gameScripts[key][item] === undefined)
                     gameScripts[key][item] = { 'code': defaultReactions[key] };
