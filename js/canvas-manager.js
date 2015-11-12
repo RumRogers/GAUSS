@@ -236,29 +236,6 @@ var updateCanvas = function(room, which)
     _canvas.height = room.items[0].boundingBox.height;
     //_canvas.height = resolution.height;
 
-    var canvasDiv = $('.canvas.' + which);
-
-    //canvasDiv.width(resolution.width);
-    //canvasDiv.height(resolution.height - guiHeights[resolution.height]);
-    //canvasDiv.height(resolution.height);
-    if(_canvas.width > resolution.width)
-    {
-        canvasDiv.css({ 'overflow-x' : 'scroll' });
-    }
-    else
-    {
-        canvasDiv.css({ 'overflow-x' : 'visible' });
-    }
-    //if(_canvas.height > resolution.height - guiHeights[resolution.height])
-    if(_canvas.height > resolution.height)
-    {
-        canvasDiv.css({ 'overflow-y' : 'scroll' });
-    }
-    else
-    {
-        canvasDiv.css({ 'overflow-y' : 'visible' });
-    }
-
     _context.drawImage(room.items[0].img, room.items[0].boundingBox.left, room.items[0].boundingBox.top);
 
     _drawRoomChunks();
