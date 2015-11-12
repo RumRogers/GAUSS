@@ -520,7 +520,7 @@ var exportGame = function()
                 guiObj.setActionSelected(MOUTH_ID);\n\
                 btnHovering = true;\n\
             }\n\
-            else if(getDistanceBetweenPoints(mousePos, guiObj.cogwheelButtonCenter) < guiObj.getButtonRadius())\n\
+            else if(guiObj.inventoryOpen === true && getDistanceBetweenPoints(mousePos, guiObj.cogwheelButtonCenter) < guiObj.getButtonRadius())\n\
             {\n\
                 guiObj.setActionSelected(COMBINE_ID);\n\
                 btnHovering = true;\n\
