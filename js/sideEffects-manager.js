@@ -446,11 +446,13 @@ var cameraCenterItem = function(characterId)
     if(viewport.left < 0)
         viewport.left = 0;
     else if(viewport.left + resolution.width > testCurrentRoom.items[0].img.width)
-        viewport.left = testCurrentRoom.items[0].img.width - resolution.width;
-    viewport.top = 0;
-    //viewport.top = character.position.y - resolution.height / 2;
-    //if(viewport.top < 0)
-    //    viewport.top = 0;
+        viewport.left = Math.max(testCurrentRoom.items[0].img.width - resolution.width, 0);
+
+    viewport.top = character.position.y - (2 * resolution.height / 3);
+    if(viewport.top < 0)
+        viewport.top = 0;
+    else if(viewport.top + resolution.height > testCurrentRoom.items[0].img.height)
+        viewport.top = Math.max(testCurrentRoom.items[0].img.height - resolution.height, 0);
 };
 
 var enableWalkbox = function(walkboxId)

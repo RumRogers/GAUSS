@@ -248,12 +248,11 @@ var exportGame = function()
         var $gameCanvas = $(\'#game-canvas\');\n\
         $gameCanvas.css({\'background\' : \'black\', \'cursor\' : \'none\', \'border\' : \'1px solid black\' });\n\
         gameCanvas = $gameCanvas[0];\n\
-        gameCtx = gameCanvas.getContext(\'2d\');\n\
-        \n\
         gameCanvas.width = resolution.width;\n\
         gameCanvas.height = resolution.height;\n\
         setCanvasResolution(gameCanvas, window.screen.width, window.screen.height);\n\
         \n\
+        gameCtx = gameCanvas.getContext(\'2d\');\n\
         gameCtx.font = \'30px LEC\';\n\
         gameCtx.fillStyle = \'white\';\n\
         gameCtx.strokeStyle = \'black\';\n\

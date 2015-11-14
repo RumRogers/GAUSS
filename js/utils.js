@@ -117,7 +117,7 @@ var orderPanels = function(panel1_id, panel2_id)
 
 var setCanvasResolution = function(canvas, w, h)
 {
-    $(canvas).css({ 'width' : '' + w, 'height' : '' + h});
+    $(canvas).css({ 'width' : w, 'height' : h});
     scaleFactor.x =  w / canvas.width;
     scaleFactor.y = h / canvas.height;
 };

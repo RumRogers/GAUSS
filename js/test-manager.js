@@ -221,12 +221,12 @@ var initTest = function()
     var $gameCanvas = $('#game-canvas');
     $gameCanvas.css({'background' : 'black', 'cursor' : 'none', 'border' : '1px solid black' });
     gameCanvas = $gameCanvas[0];
-    gameCtx = gameCanvas.getContext('2d');
-
     gameCanvas.width = resolution.width;
     gameCanvas.height = resolution.height;
-
     setCanvasResolution(gameCanvas, 640, 480);
+
+    gameCtx = gameCanvas.getContext('2d');
+
 
     gameCtx.font = '30px LEC';
     gameCtx.fillStyle = 'white';
@@ -693,7 +693,7 @@ var drawScene = function()
 
     var bg = testCurrentRoom.items[0].img;
     gameCtx.clearRect(0, 0, resolution.width, resolution.height);
-    gameCtx.drawImage(bg, viewport.left, viewport.top, gameCanvas.width, gameCanvas.height, 0, 0, gameCanvas.width, gameCanvas.height);
+    gameCtx.drawImage(bg, viewport.left, viewport.top,  Math.min(gameCanvas.width, bg.width), Math.min(gameCanvas.height, bg.height), 0, 0, Math.min(gameCanvas.width, bg.width), Math.min(gameCanvas.height, bg.height));
 
     var charactersIndexes = [];
     for(var i = 0; i < testCharactersList.length; i++) {
