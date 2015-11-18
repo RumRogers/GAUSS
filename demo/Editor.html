@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>GAUSS Editor</title>
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/jquery.inputfile.css">
+        <link rel="stylesheet" href="css/bootstrap-editable.css">
+        <link rel="stylesheet" href="css/jstree/style.css">
+        <link rel="stylesheet" href="css/codemirror.css">
+        <link rel="stylesheet" href="css/select2.css">
+        <link rel="stylesheet" href="css/select2-bootstrap.css">
+		<script type="text/javascript" src="js/jquery-1.11.0.js"></script>
+        <script type="text/javascript" src="js/bootstrap.js"></script>
+        <script type="text/javascript" src="js/bootstrap-editable.js"></script>
+        <script type="text/javascript" src="js/jquery.inputfile.js"></script>
+        <script type="text/javascript" src="js/paper-full.js"></script>
+        <script type="text/javascript" src="js/walkbox-manager.js"></script>
+        <script type="text/javascript" src="js/room-manager.js"></script>
+        <script type="text/javascript" src="js/action-manager.js"></script>
+        <script type="text/javascript" src="js/character-manager.js"></script>
+        <script type="text/javascript" src="js/inventory-manager.js"></script>
+        <script type="text/javascript" src="js/anims-manager.js"></script>
+        <script type="text/javascript" src="js/script-manager.js"></script>
+        <script type="text/javascript" src="js/sideEffects-manager.js"></script>
+        <script type="text/javascript" src="js/test-manager.js"></script>
+        <script type="text/javascript" src="js/pathfinding.js"></script>
+        <script type="text/javascript" src="js/view.js" defer></script>
+        <script type="text/javascript" src="js/project.js"></script>
+        <script type="text/javascript" src="js/generator.js"></script>
+        <script type="text/javascript" src="js/variables-manager.js"></script>
+        <script type="text/javascript" src="js/dialog-manager.js"></script>
+        <script type="text/javascript" src="js/audio-manager.js"></script>
+        <script type="text/javascript" src="js/utils.js"></script>
+        <script type="text/javascript" src="js/deepCopy.js"></script>
+        <script type="text/javascript" src="js/codemirror.js"></script>
+        <script type="text/javascript" src="js/javascript.js"></script>
+        <script type="text/javascript" src="js/canvas-manager.js"></script>
+        <script type="text/javascript" src="js/select2.min.js"></script>
+	</head>
+
+    <style> @font-face { font-family: Badaboom; src: url('fonts/Badaboom.ttf'); }
+            @font-face { font-family: LEC; src: url('fonts/MI.TTF'); }
+
+</style>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div style="margin-top: 5px">
+                <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="icons/cc.png" /></a><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" property="dct:title" rel="dct:type"> GAUSS</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/RumRogers" property="cc:attributionName" rel="cc:attributionURL">Andrea Serreli</a> is licensed under a
+                <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+            </div>
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">GAUSS Editor</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown project-action">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Project<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" id="new-project">New</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#" id="load-project">Load <input type="file" id="project-uploader" accept=".json"></a></li>
+                            <li class="divider"></li>
+                            <li><a href="#" id="project-downloader">Save</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#" id="export-game">Export game </a></li>
+                        </ul>
+                    </li>
+                    <!--<li class="app-state options"><a href="#">Game Options</a></li>-->
+                    <li class="app-state room"><a href="#">Rooms</a></li>
+                    <!--<li class="app-state action"><a href="#">Actions</a></li>-->
+                    <li class="app-state character"><a href="#">Characters</a></li>
+                    <li class="app-state script"><a href="#">Scripts</a></li>
+                    <li class="app-state dialog"><a href="#">Dialogs</a></li>
+                    <li class="app-state anims"><a href="#">Anims</a></li>
+                    <li class="app-state inventory" ><a href="#">Inventory Items</a></li>
+                    <!--<li class="app-state variables"><a href="#">Game variables</a></li>-->
+                    <li class="app-state sound"><a href="#">Music & Sound FX</a></li>
+                    <li class="app-state test"><a href="#">Test</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="container-fluid app" id="room-manager" style="margin-top: 100px; position: relative;">
+        <div class="row-fluid">
+            <div class="col-md-4">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Rooms</h4>
+                        </div>
+                <div class="panel-body">
+                <div class="btn-group btn-group-xs room">
+                    <button type="button" class="btn btn-default btn-xs add room">
+                        <span class="glyphicon glyphicon-plus-sign"></span>
+                        Add
+                    </button>
+                    <button type="button" class="btn btn-default delete room">
+                        <span class="glyphicon glyphicon-minus-sign"></span>
+                        Delete
+                    </button>
+                </div>
+                <br><br>
+                    <div class="panel-group" id="room-accordion">
+                    </div>
+            </div>
+        </div>
+            </div>
+            <div class="col-md-8 container room" style="display: none;">
+                <div class="col-md-12" style="position: fixed">
+                    <div class="canvas room" style="overflow: scroll; border: 1px solid #000000; width: 60%; height: 480px">
+                    <canvas id="editor-canvas"> </canvas>
+                    </div>
+                    <div class="toolbar room">
+                        <div class="well well-sm" style="float: left;"><span style="vertical-align: middle; margin-left: 20px">Mouse: </span><span class="mouse-pos" style="vertical-align: middle;">(<span class="xPos">- </span> , <span class="yPos">-</span>)</span>
+                            <div class="btn-toolbar" role="toolbar" style="float: left">
+                                <div class="btn-group btn-group-xs">
+                                    <button type="button" id="place-sprite" class="btn btn-default btn-xs">
+                                        <span class="glyphicon glyphicon-move"></span>
+                                    </button>
+                                    <button type="button" id="set-hotspot" class="btn btn-default btn-xs" title="Set hotspot">
+                                        <span class="glyphicon glyphicon-screenshot"></span>
+                                    </button>
+                                    <button type="button" id="set-walkzone" class="btn btn-default btn-xs">
+                                        <img src="icons/shoe-print-large-hi.png"  />
+                                    </button>
+                                    <button type="button" id="xy-picker" class="btn btn-default btn-xs">
+                                        <img src="icons/coord_picker.png"  />
+                                    </button>
+                                    <button type="button" id="walk-behind" class="btn btn-default btn-xs">
+                                        <img src="icons/depth-icon.png"  />
+                                    </button>
+                                    <button type="button" id="crop-image" class="btn btn-default btn-xs">
+                                        <img src="icons/scissors.png"  />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="container-fluid app" id="action-manager" style="margin-top: 100px; position: relative;">
+        <div class="row-fluid">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Actions</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="panel-group" id="action-accordion"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    <div class="container-fluid app" id="character-manager" style="margin-top: 100px; position: relative;">
+        <div class="row-fluid">
+            <div class="col-md-4">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Characters</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="btn-group btn-group-xs character">
+                            <button type="button" class="btn btn-default btn-xs add character">
+                                <span class="glyphicon glyphicon-plus-sign"></span>
+                                Add
+                            </button>
+                            <button type="button" class="btn btn-default delete character">
+                                <span class="glyphicon glyphicon-minus-sign"></span>
+                                Delete
+                            </button>
+                        </div>
+                        <br><br>
+                        <div class="panel-group" id="character-accordion">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 container character" style="display: none;">
+                <div class="col-md-12" style="position: fixed;">
+                    <div class="canvas character" style="overflow: scroll; border: 1px solid #000000; width: 60%; height: 480px">
+                        <canvas id="character-canvas"> </canvas>
+                    </div>
+                    <div class="toolbar character">
+                        <div class="well well-sm" style="float: left;"><span style="vertical-align: middle; margin-left: 20px">Mouse: </span><span class="mouse-pos" style="vertical-align: middle;">(<span class="xPos">- </span> , <span class="yPos">-</span>)</span>
+                            <div class="btn-toolbar" role="toolbar" style="float: left">
+                                <div class="btn-group btn-group-xs">
+                                    <button type="button" id="place-spriteChar" class="btn btn-default btn-xs">
+                                        <span class="glyphicon glyphicon-move"></span>
+                                    </button>
+                                    <button type="button" id="set-hotspotChar" class="btn btn-default btn-xs" title="Set hotspot">
+                                        <span class="glyphicon glyphicon-screenshot"></span>
+                                    </button>
+                                    <button type="button" id="xy-pickerChar" class="btn btn-default btn-xs">
+                                        <img src="icons/coord_picker.png"  />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    <div class="container-fluid app" id="anims-manager" style="margin-top: 100px; position: relative;">
+        <div class="row-fluid">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Anims</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="btn-group btn-group-xs character">
+                            <button type="button" class="btn btn-default btn-xs add anim">
+                                <span class="glyphicon glyphicon-plus-sign"></span>
+                                Add
+                            </button>
+                            <button type="button" class="btn btn-default delete anim">
+                                <span class="glyphicon glyphicon-minus-sign"></span>
+                                Delete
+                            </button>
+                            <button type="button" class="btn btn-default clear anim">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                Clear all
+                            </button>
+                        </div>
+                        <br><br>
+                        <div class="panel-group" id="anims-accordion">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="container-fluid app" id="test-manager" style="margin-top: 100px; position: relative;">
+            <div class="row-fluid">
+                <div class="col-md-1">
+                    <button id="start-test" type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-play"></span>
+                    Start test
+                    </button>
+                </div>
+                <div class="col-md-offset-1 col-md-10 container">
+                    <canvas id="game-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    <div class="container-fluid app" id="script-manager" style="margin-top: 100px; position: relative;">
+        <select id="datalist-triggerer-events" hidden>
+            <option value="" disabled selected>None selected</option>
+        </select>
+        <select id="datalist-game-items" hidden>
+            <option value="" disabled selected>None selected</option>
+        </select>
+        <select id="datalist-game-inventory-items" hidden>
+            <option value="" disabled selected>None selected</option>
+        </select >
+        <select id="datalist-game-rooms" hidden>
+            <option value="" disabled selected>None selected</option>
+        </select >
+        <select id="datalist-game-dialogs" hidden>
+            <option value="" disabled selected>None selected</option>
+        </select >
+        <select id="datalist-game-scripts" hidden>
+            <option value="" disabled selected>None selected</option>
+        </select >
+        <select id="datalist-game-anims" hidden>
+            <option value="" disabled selected>None selected</option>
+        </select >
+        <select id="datalist-game-audio" hidden>
+        </select >
+        <select id="datalist-game-directions" hidden>
+            <option>Left</option>
+            <option>Right</option>
+            <option>Front</option>
+            <option>Back</option>
+        </select>
+
+        <div class="row-fluid" style=" -webkit-user-select: none;  /* Chrome all / Safari all */
+                                        -moz-user-select: none;     /* Firefox all */
+                                        -ms-user-select: none;      /* IE 10+ */
+                                        /* Not supported yet */
+                                        -o-user-select: none;
+                                        user-select: none;">
+
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Scripts</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-md-10">
+                            <button id="new-script" class="btn btn-default btn-sm" style="width: 80px">
+                                New script
+                            </button>
+                            <button id="save-script" class="btn btn-default btn-sm" style="width: 80px">
+                                Save script
+                            </button>
+                            <button id="save-script-as" class="btn btn-default btn-sm" style="width: 80px">
+                                Save script as...
+                            </button>
+                            <button id="load-script" class="btn btn-default btn-sm" style="width: 80px">
+                                Load script
+                            </button>
+                            <button class="btn btn-default btn-sm" style="width: 80px">
+                                Delete script
+                            </button>
+
+                            <div style="margin-top: 15px">
+                                <span>Current script: </span><span id="currentScript">unnamed script</span>
+                            </div>
+
+                            <div id="script-container" class="container-fluid">
+                                <div class="row" style="margin-top: 15px">
+                                    <textarea id="textarea"></textarea>
+                                </div>
+                                <div class="row" style="margin-top: 50px;">
+                                    Run this script on
+                                    <select id="script-runner">
+                                        <option value="user-trigger">User interaction</option>
+                                        <option value="event-trigger">Event occurrence</option>
+                                        <option value="timer-trigger">Timer</option>
+                                        <option value="enter-room-trigger">Entering room</option>
+                                        <option value="exit-room-trigger">Exiting room</option>
+                                    </select>
+                                    <span id="add-execution-triggerer" class="glyphicon glyphicon-plus" style="color: green; margin-left: 10px;"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid app" id="global-vars-manager" style="margin-top: 100px; position: relative;">
+        <div class="row-fluid">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Game variables</h4>
+                    </div>
+                    <div id="game-vars-container" class="panel-body">
+                        <div class="btn-group btn-group-xs global-var">
+                            <span id="new-var" class="glyphicon glyphicon-plus" style="color: green"></span>
+                            <span id="clear-all-vars" class="glyphicon glyphicon-trash" style="color: firebrick; margin-left: 10px;"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid app" id="inventory-manager" style="margin-top: 100px; position: relative;">
+        <div class="row-fluid">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Inventory Items</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="btn-group btn-group-xs inventory">
+                            <button type="button" class="btn btn-default btn-xs add inventory">
+                                <span class="glyphicon glyphicon-plus-sign"></span>
+                                Add
+                            </button>
+                            <button type="button" class="btn btn-default delete inventory">
+                                <span class="glyphicon glyphicon-minus-sign"></span>
+                                Delete
+                            </button>
+                            <button type="button" class="btn btn-default clear inventory">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                Clear all
+                            </button>
+                        </div>
+                        <br><br>
+                        <div class="panel-group" id="inventory-accordion">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid app" id="dialog-manager" style="margin-top: 100px; position: relative;">
+        <div class="row-fluid">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Dialogs</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="btn-group btn-group-xs dialog">
+                            <button type="button" class="btn btn-default btn-xs add dialog">
+                                <span class="glyphicon glyphicon-plus-sign"></span>
+                                Add
+                            </button>
+                            <button type="button" class="btn btn-default delete dialog">
+                                <span class="glyphicon glyphicon-minus-sign"></span>
+                                Delete
+                            </button>
+                            <button type="button" class="btn btn-default clear dialog">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                Clear all
+                            </button>
+                        </div>
+                        <br><br>
+                        <div class="panel-group" id="dialog-accordion">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid app" id="options-manager" style="margin-top: 100px; position: relative;">
+        <div class="row-fluid">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Game options</h4>
+                    </div>
+                    <div class="panel-body">
+                        Resolution:
+                        <select id="game-resolution">
+                        <option value="320x200">320x200</option>
+                        <option value="640x480" selected="selected">640x480</option>
+                        <option value="800x600">800x600</option>
+                        <option value="1024x768">1024x768</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid app" id="sound-manager" style="margin-top: 100px; position: relative;">
+        <div class="row-fluid">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Music & Sound FX</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="btn-group btn-group-xs sound">
+                            <button type="button" class="btn btn-default btn-xs add sound">
+                                <span class="glyphicon glyphicon-plus-sign"></span>
+                                Add
+                            </button>
+                            <button type="button" class="btn btn-default delete sound">
+                                <span class="glyphicon glyphicon-minus-sign"></span>
+                                Delete
+                            </button>
+                            <input type="file" id="sound-uploader" accept="audio/*" multiple>
+                        </div>
+                        <div id="audio-container">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <!-- Modals -->
+        <div class="modal" data-backdrop="static" id="save-script-modal" tabindex="-1" role="dialog" aria-labelledby="save-script-modal-label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="save-script-modal-label">Save script</h4>
+                    </div>
+                    <div class="modal-body">
+                        Save script as...
+                        <input id="saveScriptInputText" type="text" class="form-control" placeholder="Type in the script name">
+                        <select id='script-name' placeholder="Enter script name" class="datalist-game-scripts"></select>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="save-script-modal-OK" type="button" class="btn btn-success">Save</button>
+                        <button id="save-script-modal-Cancel" type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" data-backdrop="static" id="overwrite-script-modal" tabindex="-1" role="dialog" aria-labelledby="save-script-modal-label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="overwrite-script-modal-label">Warning!</h4>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to overwrite this script?
+                    </div>
+                    <div class="modal-footer">
+                        <button id="overwrite-script-modal-OK" type="button" class="btn btn-success">Yes</button>
+                        <button id="overwrite-script-modal-Cancel" type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" data-backdrop="static" id="unsaved-script-modal" tabindex="-1" role="dialog" aria-labelledby="new-script-modal-label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="unsaved-script-modal-label">Warning!</h4>
+                    </div>
+                    <div class="modal-body">
+                        You didn't save the current script. Proceed?
+                    </div>
+                    <div class="modal-footer">
+                        <button id="unsaved-script-modal-OK" type="button" class="btn btn-success" data-dismiss="modal">Yes</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" data-backdrop="static" id="load-script-modal" tabindex="-1" role="dialog" aria-labelledby="load-script-modal-label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="load-script-modal-label">Load script</h4>
+                    </div>
+                    <div class="modal-body">
+                        Script:
+                        <select id="script-to-load" class="datalist-game-scripts"></select>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="load-script-modal-OK" type="button" class="btn btn-success" data-dismiss="modal">Load</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="modal" data-backdrop="static" id="cropped-image-modal" tabindex="-1" role="dialog" aria-labelledby="cropped-image-modal-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Image cropping</h4>
+                </div>
+                <div id="cropped-image" class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button id="cropped-image-modal-OK" type="button" class="btn btn-success">Save image</button>
+                    <button id="cropped-image-modal-Cancel" type="button" class="btn btn-danger" data-dismiss="modal">Dismiss image</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+	</body>
+</html>
