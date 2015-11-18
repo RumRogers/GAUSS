@@ -19,6 +19,18 @@ $(document).ready(function()
 {
     $(".app").hide();
     $('#start-test').click(function(){ initTest(); });
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://ranma42.github.io/GAUSS/demo/DemoProject.json', true);
+    xhr.responseType = 'blob';
+    xhr.onload = function(e) {
+	if (this.status == 200) {
+	    loadProject({ target: { files: [ this.response ]} });
+	    // TODO: use a div to notify the user
+	    alert('I loaded a demo project for you!\nYou can test it or start editing it right now :)');
+	}
+    };
+    xhr.send();
 });
 
 /*============================================================ NAVBAR LOGIC ===================================================================*/
